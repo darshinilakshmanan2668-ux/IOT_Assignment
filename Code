@@ -1,0 +1,71 @@
+#define TRIG 9
+#define ECHO 10
+
+#define GREEN 2
+#define YELLOW 3
+#define RED 4
+#define BUZZER 5
+
+long duration;
+float distance;
+
+void setup()
+{
+  pinMode(TRIG, OUTPUT);
+  pinMode(ECHO, INPUT);
+
+  pinMode(GREEN, OUTPUT);
+  pinMode(YELLOW, OUTPUT);
+  pinMode(RED, OUTPUT);
+  pinMode(BUZZER, OUTPUT);
+
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  // Send ultrasonic pulse
+  digitalWrite(TRIG, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(TRIG, HIGH);
+  delayMicroseconds(10);
+
+  digitalWrite(TRIG, LOW);
+
+  // Receive echo
+  duration = pulseIn(ECHO, HIGH);
+
+  // Calculate distance in cm
+  distance = duration * 0.034 / 2;
+
+  // Turn everything OFF first
+  digitalWrite(GREEN, LOW);
+  digitalWrite(YELLOW, LOW);
+  digitalWrite(RED, LOW);
+  digitalWrite(BUZZER, LOW);
+
+  // Water level indication
+  if (distance > 20)
+  {
+    // Low water level
+    digitalWrite(GREEN, HIGH);
+  }
+  else if (distance > 10)
+  {
+    // Medium water level
+    digitalWrite(YELLOW, HIGH);
+  }
+  else
+  {
+    // High water level
+    digitalWrite(RED, HIGH);
+    digitalWrite(BUZZER, HIGH);
+  }
+
+  Serial.print("Distance: ");
+  Serial.print(distance);
+  Serial.println(" cm");
+
+  delay(500);
+}
